@@ -135,6 +135,7 @@ layout
 @yield('postContent')
 ```
 Sample output:
+----
 
 **Jigsaw quickstart tutorial**
 
