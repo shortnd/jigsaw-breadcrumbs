@@ -1,0 +1,16 @@
+{
+    "name": "zerochip/jigsaw-breadcrumbs",
+    "description": "Jigsaw plugin for generating breadcrumbs",
+    "authors": [
+        {
+            "name": "Alex @zerochip",
+            "email": "semhiles@gmail.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "autoload": {
+        "psr-4": {
+            "Jigsaw\\Breadcrumbs\\": "src"
+        }
+    }
+}
