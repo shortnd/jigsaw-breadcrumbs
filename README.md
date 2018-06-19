@@ -133,9 +133,8 @@ layout
 <hr>
 @yield('postContent')
 ```
-Sample output
+Sample output:
 
 <h2>Jigsaw quickstart tutorial</h2>
 <a href="/">Home</a> / <a href="/categories">Categories</a> / <a href="/categories/tutorial">Tutorial</a> / <a href="/2018-06-19-jigsaw_quickstart_tutorial">Jigsaw quickstart tutorial</a>
-<hr>
-Let me teach you Jigsaw made by the wonderful people at <a href="https://tighten.co">Tighten</a> real quick
+<p>Let me teach you Jigsaw made by the wonderful people at <a href="https://tighten.co">Tighten</a> real quick<p>
