@@ -43,7 +43,7 @@ class Types
     /**
      * Breadcrumb template to be used
      */
-    public $template = 'plain';
+    public $template = 'bootstrap4';
 
     /**
      * Set to true when using a custom template
@@ -61,7 +61,7 @@ class Types
 }
 ```
 
-The breadcrumb template to be used is spedified in `$template` more on that later.The name of the breadcrumb will be a method in that class.
+The breadcrumb template to be used is specified in teh property `$template` but more on that later.The name of the breadcrumb will be a method in that class.
 Add composer autoload to our config file
 ```php
 require __DIR__.'/vendor/autoload.php';
@@ -74,10 +74,20 @@ Then add a helper function for breadcrumbs
 },
 ```
 
-Then in our blade template
+Breadcrumbs are constructed using the `Jigsaw\Breadcrumbs\Builder` class
+```php
+public function home()
+{
+    return Builder::make('Home', '/');
+}
+```
+The first parameter is the text and the second is the url
+
+Then in a blade template
 ```ruby
 {{ $page->breadcrumbs('home') }}
 ```
+The first parameter passed to a helper call will be the breadcrumb type.
 
 will output
 ```html
@@ -87,13 +97,74 @@ will output
     </ol>
 </nav>
 ```
-<hr>
 <a href="/">Home</a>
+<hr>
+
+The second parameter is optional. When the the second parameter is not given url is not given the first parameter is converted to lowercase and used as the url. 
+```php
+public function home()
+{
+    return Builder::make('Blog');
+}
+```
+
+in blade template
+```ruby
+{{ $page->breadcrumbs('blog') }}
+```
+
+output
+```html
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/blog">Blog</a></li>
+    </ol>
+</nav>
+```
+<a href="/blog">Blog</a>
+<hr>
+
+When the breadcrumb url is a slugged version of the text the method `makeAndSlug()` can be used. It works like make but the second parameter is the delimiter for generating the slug.
+```php
+public function home()
+{
+    return Builder::makeAndSlug('About Us', '_');
+}
+```
+will output
+```html
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/about_us">About Us</a></li>
+    </ol>
+</nav>
+```
+<a href="/about_us">About Us</a>
+<hr>
+
+The second parameter is optional. When left out the separator defaults to a dash ( - ).
+```php
+public function home()
+{
+    return Builder::makeAndSlug('About Us');
+}
+```
+
+output
+```html
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/about-us">About Us</a></li>
+    </ol>
+</nav>
+```
+<a href="/about-us">About Us</a>
 <hr>
 
 ### Chaining breadcrumbs
 
-Breadcrumbs can be chained. Example of a breadcrump for categories page
+Breadcrumbs can be chained. When chaining breadcrumbs we can refference the parent in using the builder `parent()` method. We the add the child  using the `push()` which works like `make()`.
+Example of a breadcrump for categories page
 ```php
 // plugins/Breadcrumbs/Types.php
 public function categories()
@@ -103,26 +174,82 @@ public function categories()
 }
 ```
 
-in view
+in blade template
 ```ruby
 {{ $page->breadcrumbs('categories') }}
 ```
 
 output
-<hr>
+```html
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/">Home</a></li>
+        <li class="breadcrumb-item"><a href="/categories">Categories</a></li>
+    </ol>
+</nav>
+```
 <a href="/">Home</a> / <a href="/categories">Categories</a>
+<hr>
+
+There is also a `pushAndSlug()` method which works like `makeAndSlug()`,
+
+### Using values in global $page
+Since a breadcrumb type is a method it can take parameters. With the current setup in the helper function the first parameter passed to a breadcrumb type is jigsaw's `$page` global variable.
+```php
+// plugins/Breadcrumbs/Types.php
+public function project($project)
+{
+    return Builder::make('Projects')
+            ->push($project->title, $project->title);
+}
+```
+The parameter `$project` is actually jigsaw's `$page`  
+in blade template
+
+Lets say we have a projects collection
+```php
+'projects' => [
+    'path' => 'projects/{-title}'
+],
+```
+
+and the follow front matter in a project
+```
+---
+extends: _layouts.project
+section: projectDescription
+title: Jigsaw Breadcrumbs
+---
+```
+
+in the blade template
+```ruby
+{{ $page->breadcrumbs('project') }}
+```
+
+output
+```html
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/">Home</a></li>
+        <li class="breadcrumb-item"><a href="/projects">Projects</a></li>
+        <li class="breadcrumb-item"><a href="/projects/jigsaw-breadcrumbs">Jigsaw Breadcrumbs</a></li>
+    </ol>
+</nav>
+```
+<a href="/">Home</a> / <a href="/projects">Projects</a> / <a href="/projects/jigsaw-breadcrumbs">Jigsaw Breadcrumbs</a>
 <hr>
 
 ### Advanced chaining
 
-Multiple children can be chained to a breadcrumb in one call. Since breadcrumb definitions are method the take parameters.  lets take a step back and look at our helper
+Multiple breadcrumb items can be chained in one call. Taking a step back to our helper
 ```php
 'breadcrumbs' => function ($page, $type, $params = null) {
     return Plugin\Breadcrumbs\Render::for($type, $page, $params);
 },
 ```
 
-This means the first parameter passed to a breadcrumb type will be jigsaw's `$page` variable. The following is a example of advanced chaining
+The second parameter passed to a breadcrumb helper call will be passed as the second parameter of a breadcrumb type.
 ```php
 // plugins/Breadcrumbs/Types.php
 public function post($post, $category)
@@ -142,23 +269,26 @@ title: Jigsaw quickstart tutorial
 category: tutorial
 published: 2017-06-14
 ---
-
-Let me teach you Jigsaw made by the wonderful people at [Tighten](https://tighten.co) real quick.
+```
 
 layout
 ```ruby
-<h3>{{ $page->title }}</h3>
 {{ $page->breadcrumbs('post', $categories->where('slug', $post->category)->first() }}
-<hr>
-@yield('postContent')
 ```
-Sample output below:
 
-<hr>
-**Jigsaw quickstart tutorial**
-
-<a href="/">Home</a> / <a href="/categories">Categories</a> / <a href="/categories/tutorial">Tutorial</a> / <a href="/2018-06-19-jigsaw_quickstart_tutorial">Jigsaw quickstart tutorial</a>
+output
+```
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/">Home</a></li>
+        <li class="breadcrumb-item"><a href="/categories">Categories</a></li>
+        <li class="breadcrumb-item"><a href="/categories/tutorial">Tutorial</a></li>
+        <li class="breadcrumb-item"><a href="/2018-06-19-jigsaw_quickstart_tutorial">Jigsaw quickstart tutorial</a></li>
+    </ol>
+</nav>
 <p>Let me teach you Jigsaw made by the wonderful people at <a href="https://tighten.co">Tighten</a> real quick<p>
+```
+<a href="/">Home</a> / <a href="/categories">Categories</a> / <a href="/categories/tutorial">Tutorial</a> / <a href="/2018-06-19-jigsaw_quickstart_tutorial">Jigsaw quickstart tutorial</a>
 <hr>
 
 ### Custom templates
