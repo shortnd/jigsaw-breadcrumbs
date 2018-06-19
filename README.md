@@ -95,6 +95,7 @@ in view
 ```
 
 output
+
 <a href="/">Home</a> / <a href="/categories">Categories</a>
 
 **Advanced chaining**
