@@ -100,7 +100,7 @@ will output
 <a href="/">Home</a>
 <hr>
 
-The second parameter is optional. When the the second parameter is not given url is not given the first parameter is converted to lowercase and used as the url. 
+The second parameter is optional. When the the second parameter is not given, first parameter is converted to lowercase and used as the url. 
 ```php
 public function home()
 {
