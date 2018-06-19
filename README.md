@@ -26,7 +26,7 @@ In your jigsaw app's root:
 Define your breadcrumbs in `/plugins/Breadcrumbs/Types.php`
 ```php
 <?php
-	
+    
 namespace Plugin\Breadcrumbs;
 
 class Types
@@ -134,10 +134,15 @@ layout
 <hr>
 @yield('postContent')
 ```
-Sample output:
+Sample output below:
+
 ----
 
 **Jigsaw quickstart tutorial**
 
 <a href="/">Home</a> / <a href="/categories">Categories</a> / <a href="/categories/tutorial">Tutorial</a> / <a href="/2018-06-19-jigsaw_quickstart_tutorial">Jigsaw quickstart tutorial</a>
 <p>Let me teach you Jigsaw made by the wonderful people at <a href="https://tighten.co">Tighten</a> real quick<p>
+
+----
+
+.
