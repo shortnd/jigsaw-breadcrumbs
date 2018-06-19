@@ -7,29 +7,26 @@
 This is a [Jigsaw](https://github.com/tightenco/jigsaw)  plugin for adding breadcrumbs to your pages.
 
 ## Installation
-Autoload plugins folder
+`composer require zerochip/jigsaw-breadcrumbs`
 
+Autoload plugin-settings folder
 ```json
 "autoload": {
     "psr-4": {
-        "Plugin\\": "plugins/"
+        "PluginSettings\\": "plugins-settings/"
     }
 } 
 ```
 
-In your jigsaw app's root:
--  create a plugins folder
-`mkdir plugins`
-- clone this repository in it
-`cd plugins`
-`git clone https://github.com/zerochip/jigsaw-breadcrumbs.git`
-
 ## Usage
-Define your breadcrumbs in `/plugins/Breadcrumbs/Types.php`
+Define your breadcrumbs in `/plugin-settings/Breadcrumbs/Types.php`
+
 ```php
 <?php
     
-namespace Plugin\Breadcrumbs;
+namespace PluginSettings\Breadcrumbs;
+
+use Jigsaw\Breadcrumbs\Builder;
 
 class Types
 {
@@ -46,30 +43,42 @@ class Types
     /**
      * Breadcrumb template to be used
      */
-    public $template = 'bootstrap4';
+    public $template = 'plain';
 
+    /**
+     * Set to true when using a custom template
+     */
+    public $custom_template = false;
+
+    /**
+     * Home page
+     * @return object \Jigsaw\Breadcrumbs\Builder
+     */
     public function home()
     {
         return Builder::make('Home', '/');
     }
 }
-
 ```
+
 The breadcrumb template to be used is spedified in `$template` more on that later.The name of the breadcrumb will be a method in that class.
 Add composer autoload to our config file
 ```php
 require __DIR__.'/vendor/autoload.php';
 ```
+
 Then add a helper function for breadcrumbs
 ```php
 'breadcrumbs' => function ($page, $type, $params = null) {
     return Plugin\Breadcrumbs\Render::for($type, $page, $params);
 },
 ```
+
 Then in our blade template
 ```ruby
 {{ $page->breadcrumbs('home') }}
 ```
+
 will output
 ```html
 <nav aria-label="breadcrumb">
@@ -78,9 +87,12 @@ will output
     </ol>
 </nav>
 ```
+<hr>
 <a href="/">Home</a>
+<hr>
 
 ### Chaining breadcrumbs
+
 Breadcrumbs can be chained. Example of a breadcrump for categories page
 ```php
 // plugins/Breadcrumbs/Types.php
@@ -97,17 +109,20 @@ in view
 ```
 
 output
-
+<hr>
 <a href="/">Home</a> / <a href="/categories">Categories</a>
+<hr>
 
 ### Advanced chaining
+
 Multiple children can be chained to a breadcrumb in one call. Since breadcrumb definitions are method the take parameters.  lets take a step back and look at our helper
 ```php
 'breadcrumbs' => function ($page, $type, $params = null) {
     return Plugin\Breadcrumbs\Render::for($type, $page, $params);
 },
 ```
-This means the first parametr of a breadcrumb will be jigsaw's `$page` variable
+
+This means the first parameter passed to a breadcrumb type will be jigsaw's `$page` variable. The following is a example of advanced chaining
 ```php
 // plugins/Breadcrumbs/Types.php
 public function post($post, $category)
@@ -117,6 +132,7 @@ public function post($post, $category)
         ->push($post->title, $post->slug);
 }
 ```
+
 Post front matter
 ```
 ---
@@ -128,7 +144,7 @@ published: 2017-06-14
 ---
 
 Let me teach you Jigsaw made by the wonderful people at [Tighten](https://tighten.co) real quick.
-```
+
 layout
 ```ruby
 <h3>{{ $page->title }}</h3>
@@ -138,13 +154,18 @@ layout
 ```
 Sample output below:
 
-----
-
+<hr>
 **Jigsaw quickstart tutorial**
 
 <a href="/">Home</a> / <a href="/categories">Categories</a> / <a href="/categories/tutorial">Tutorial</a> / <a href="/2018-06-19-jigsaw_quickstart_tutorial">Jigsaw quickstart tutorial</a>
 <p>Let me teach you Jigsaw made by the wonderful people at <a href="https://tighten.co">Tighten</a> real quick<p>
+<hr>
 
-----
+### Custom templates
 
-.
+Set the custom templates property in `/plugin-settings/Breadcrumbs/Types.php` to true
+```php
+public $custom_template = true;
+```
+
+*Template styling info will go here*
