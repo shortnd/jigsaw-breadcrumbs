@@ -1,6 +1,8 @@
 
 # Jigsaw Breadcrumbs plugin
 
+**Disclaimer:** This project is still a WIP so things aren't working yet
+
 ## Overview
 This is a [Jigsaw](https://github.com/tightenco/jigsaw)  plugin for adding breadcrumbs to your pages.
 
