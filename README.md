@@ -78,7 +78,7 @@ will output
 ```
 <a href="/">Home</a>
 
-**Chaining breadcrumbs**
+### Chaining breadcrumbs
 Breadcrumbs can be chained. Example of a breadcrump for categories page
 ```php
 // plugins/Breadcrumbs/Types.php
@@ -98,7 +98,7 @@ output
 
 <a href="/">Home</a> / <a href="/categories">Categories</a>
 
-**Advanced chaining**
+### Advanced chaining
 Multiple children can be chained to a breadcrumb in one call. Since breadcrumb definitions are method the take parameters.  lets take a step back and look at our helper
 ```php
 'breadcrumbs' => function ($page, $type, $params = null) {
