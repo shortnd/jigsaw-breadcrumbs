@@ -31,7 +31,7 @@ namespace Plugin\Breadcrumbs;
 
 class Types
 {
-	/*
+    /*
     |--------------------------------------------------------------------------
     | Breadcrumb types
     |--------------------------------------------------------------------------
@@ -41,15 +41,17 @@ class Types
     |
     */
 
-	/**
-	 * Breadcrumb template to be used
-	 */
-	public $template = 'bootstrap4';
+    /**
+     * Breadcrumb template to be used
+     */
+    public $template = 'bootstrap4';
 
-	public function home()
-	{
-		return Builder::make('Home', '/');
-	}
+    public function home()
+    {
+        return Builder::make('Home', '/');
+    }
+}
+
 ```
 The breadcrumb template to be used is spedified in `$template` more on that later.The name of the breadcrumb will be a method in that class.
 Add composer autoload to our config file
@@ -69,9 +71,9 @@ Then in our blade template
 will output
 ```html
 <nav aria-label="breadcrumb">
-  	<ol class="breadcrumb">
-  		<li class="breadcrumb-item"><a href="/">Home</a></li>
-  	</ol>
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/">Home</a></li>
+    </ol>
 </nav>
 ```
 <a href="/">Home</a>
@@ -82,14 +84,16 @@ Breadcrumbs can be chained. Example of a breadcrump for categories page
 // plugins/Breadcrumbs/Types.php
 public function categories()
 {
-	return Builder::parent('home')
-			->push('Categories);
+    return Builder::parent('home')
+            ->push('Categories);
 }
 ```
+
 in view
 ```ruby
 {{ $page->breadcrumbs('categories') }}
 ```
+
 output
 <a href="/">Home</a> / <a href="/categories">Categories</a>
 
@@ -105,9 +109,9 @@ This means the first parametr of a breadcrumb will be jigsaw's `$page` variable
 // plugins/Breadcrumbs/Types.php
 public function post($post, $category)
 {
-	return Builder::parent('categories')
-			->push($category->title, $category->slug)
-			->push($post->title, $post->slug);
+    return Builder::parent('categories')
+        ->push($category->title, $category->slug)
+        ->push($post->title, $post->slug);
 }
 ```
 Post front matter
