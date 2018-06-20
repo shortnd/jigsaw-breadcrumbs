@@ -21,31 +21,12 @@ class Builder
 	 *
 	 * @return array
 	 */
-	public function push($segment, $link = null)
+	public function push($segment, $link)
 	{
 		if (is_null($link)) {
 			$link = strtolower($segment);
 		}
-		$this->segments[] = [$segment, $link];
 
-		return $this;
-	}
-
-	/**
-	 * Adds the given segment to those currently available and slugs it up
-	 *
-	 * @param string $segment
-	 * @param string $separator
-	 *
-	 * @return array
-	 */
-	public function pushAndSlug($segment, $separator = null)
-	{
-		if (is_null($separator)) {
-			$separator = '-';
-		}
-
-		$link = str_replace(' ', $separator, strtolower($segment));
 		$this->segments[] = [$segment, $link];
 
 		return $this;
@@ -60,25 +41,10 @@ class Builder
 	 *
 	 * @return object \Plugin\Breadcrumbs\Builder
 	 */
-	public static function make($segment, $link = null)
+	public static function make($segment, $link)
 	{
 		$builder = new Builder;
 		return $builder->push($segment, $link);
-	}
-
-	/**
-	 * Creates a new builder instance
-	 * Adds the given segment and slugs it up
-	 *
-	 * @param string $segment
-	 * @param string $link
-	 *
-	 * @return object \Plugin\Breadcrumbs\Builder
-	 */
-	public static function makeAndSlug($segment, $separator = null)
-	{
-		$builder = new Builder;
-		return $builder->pushAndSlug($segment, $separator);
 	}
 
 	/**

@@ -14,10 +14,10 @@ class Render
 	 *
 	 * @return string
 	 */
-	public static function for($name, $params = null)
+	public static function for($page, $name, $param)
 	{
 		$types = new Types;
-		$segments = $types->$name($params)->segments;
+		$segments = $types->$name($page, $param)->segments;
 		$template = Builder::template();
 		$linebreaks = strpos($template['wrapper'], '{{items-br}}');
 		$placeholder = $linebreaks ? '{{items-br}}' : '{{items}}';
@@ -27,10 +27,6 @@ class Render
 		foreach ($segments as $segment) {
 			$text = $segment[0];
 			$link = $segment[1];
-
-			if ($link[0] != '/') {
-				$link = '/'.$link;
-			}
 
 			$item = str_replace('{{link}}', $link, $template['item']);
 			$item = str_replace('{{text}}', $text, $item);
