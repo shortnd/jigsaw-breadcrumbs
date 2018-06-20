@@ -14,10 +14,14 @@ class Render
 	 *
 	 * @return string
 	 */
-	public static function for($page, $name, $param)
+	public static function type($name, $page, $param)
 	{
 		$types = new Types;
-		$segments = $types->$name($page, $param)->segments;
+		if (is_null($param)) {
+			$segments = $types->$name($page)->segments;
+		} else {
+			$segments = $types->$name($page, $param)->segments;
+		}
 		$template = Builder::template();
 		$linebreaks = strpos($template['wrapper'], '{{items-br}}');
 		$placeholder = $linebreaks ? '{{items-br}}' : '{{items}}';
@@ -28,7 +32,7 @@ class Render
 			$text = $segment[0];
 			$link = $segment[1];
 
-			$item = str_replace('{{link}}', $link, $template['item']);
+			$item = str_replace('{{link}}', $page->baseUrl.$link, $template['item']);
 			$item = str_replace('{{text}}', $text, $item);
 
 			$breadcrumbs .= $item;

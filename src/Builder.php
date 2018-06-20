@@ -23,12 +23,7 @@ class Builder
 	 */
 	public function push($segment, $link)
 	{
-		if (is_null($link)) {
-			$link = strtolower($segment);
-		}
-
 		$this->segments[] = [$segment, $link];
-
 		return $this;
 	}
 
@@ -58,7 +53,11 @@ class Builder
 	public static function parent($name, $param = null)
 	{
 		$types = new Types;
-		return $types->$name($param);
+		if (is_null($param)) {
+			return $types->$name();
+		} else {
+			return $types->$name($param);
+		}
 	}
 
 	/**
