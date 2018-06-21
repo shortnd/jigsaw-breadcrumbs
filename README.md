@@ -4,7 +4,7 @@
 **Disclaimer:** This project is still a WIP so things aren't working yet
 
 ## Overview
-This is a [Jigsaw](https://github.com/tightenco/jigsaw)  plugin for adding breadcrumbs to your pages.
+This is a [Jigsaw](https://github.com/tightenco/jigsaw) plugin for adding breadcrumbs to your pages.
 
 ## Installation
 `composer require zerochip/jigsaw-breadcrumbs`
@@ -201,7 +201,7 @@ published: 2017-06-14
 
 layout
 ```ruby
-{{ $page->breadcrumbs('article', $categories->where('slug', $post->category) }}
+{{ $page->breadcrumbs('article', $categories->where('slug', $page->category) }}
 ```
 
 output
