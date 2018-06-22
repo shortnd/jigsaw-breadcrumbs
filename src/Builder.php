@@ -2,7 +2,7 @@
 	
 namespace Jigsaw\Breadcrumbs;
 
-use PluginSettings\Breadcrumbs\Types;
+use Plugin\Breadcrumbs\Types;
 
 class Builder
 {
